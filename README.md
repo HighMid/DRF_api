@@ -1,6 +1,6 @@
 ## DRF_Api Repo
 
-### LAB - Class 31 Project: some_API
+### LAB - Class 32 Project: some_API
 
 ### Author: DeAndre Ordonez
 
@@ -18,30 +18,36 @@
 
 ### How to initialize/run your application - 
 
-  1. `docker-compose up --build`
-  2. `docker-compose exec web python manage.py migrate`
-  3. `docker-compose exec web python manage.py createsuperuser`
+  1. `docker-compose up -d`
+  2. `docker-compose exec web python manage.py createsuperuser`
 
 ### Tests How do you run tests? - 
 
-`python manage.py tests`
+`docker-compose exec web python manage.py test`
 
 ### Tested - 
 
 ```
-@classmethod
+class SomeItemTests(APITestCase):
+    @classmethod
     def setUpTestData(cls):
-        testuser1 = get_user_model().objects.create_user(
+        cls.testuser1 = get_user_model().objects.create_user(
             username="testuser1", password="pass"
         )
-        testuser1.save()
+        cls.testuser1.save()
 
         test_thing = SomeItem.objects.create(
             name="rake",
-            owner=testuser1,
+            owner=cls.testuser1,
             description="Better for collecting leaves than a shovel.",
         )
         test_thing.save()
+        
+    def setUp(self):
+        # Log in testuser1 for each test, to simulate on going access after each test
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.testuser1)
+        
 
     def test_things_model(self):
         thing = SomeItem.objects.get(id=1)

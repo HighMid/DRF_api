@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from rest_framework.test import APIClient
 
 from .models import SomeItem
 
@@ -12,17 +13,23 @@ from .models import SomeItem
 class SomeItemTests(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        testuser1 = get_user_model().objects.create_user(
+        cls.testuser1 = get_user_model().objects.create_user(
             username="testuser1", password="pass"
         )
-        testuser1.save()
+        cls.testuser1.save()
 
         test_thing = SomeItem.objects.create(
             name="rake",
-            owner=testuser1,
+            owner=cls.testuser1,
             description="Better for collecting leaves than a shovel.",
         )
         test_thing.save()
+        
+    def setUp(self):
+        # Log in testuser1 for each test, to simulate on going access after each test
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.testuser1)
+        
 
     def test_things_model(self):
         thing = SomeItem.objects.get(id=1)
