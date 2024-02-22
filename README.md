@@ -1,3 +1,131 @@
+## Change Log #3
+## DRF_Api Repo
+
+### LAB - Class 33 Project: some_API
+
+### Author: DeAndre Ordonez
+
+### Links and Resources - N/A
+
+### Setup - N/A
+
+### PORT - 8000
+
+### DATABASE_URL - N/A
+
+### How to use your library
+
+`pip install -r requirements.txt`
+
+### How to initialize/run your application - 
+
+  1. `docker-compose up --build`
+  2. `docker-compose exec web python manage.py migrate` if needed
+  3. `docker-compose exec web python manage.py createsuperuser`
+
+### Tests How do you run tests? - **Postman**, **HTTPie**, **Thunder Client**
+
+1. Make a superuser, `docker-compose exec web python manage.py createsuperuser`
+2. Navigate to Django admin panel and log in
+3. Create a User
+4. Use the above mentioned Clients to test
+
+- Authentication
+
+    **Get Tokens**
+
+    - Method: POST
+    - URL: http://127.0.0.1:8000/api/token/
+    - Body:
+
+        ```
+        {
+        "username": "your_username",
+        "password": "your_password"
+        }
+        ```
+
+        - With the username and password you created in the admin panel
+        - This should return a JSON object,
+
+        ```
+        {
+        "refresh": "refresh token here",
+        "access": "access token here"
+        }
+        ```
+
+    **Refresh Token**
+
+    - Method: POST
+    - URL: /api/token/refresh/
+    - Body:
+
+        ```
+        {
+        "refresh": "your_refresh_token goes here"
+        }
+        ```
+
+        - If you need to refresh your access
+
+    **Create an Item**
+
+    - Method: POST
+    - URL: /someitems/
+    - Headers: Authorization: Bearer `<access_token>`
+    - Body example:
+        ```
+        {
+        "name": "Magic Sword",
+        "description": "This sword is magically.",
+        "rarity": "Rare"
+        }
+        ```
+
+    **Update an Item**
+
+    - Method: PUT/PATCH
+    - URL: /someitems/`<id>`/
+    - Headers: Authorization: Bearer `<access_token>`
+    - Body (example for PUT):
+        ```
+        {
+        "name": "Updated Sword Sword",
+        "description": "This sword has been updated.",
+        "rarity": "Common"
+        }
+        ```
+
+       - Replace `<id>` with the ID of the item you want to update.
+
+    **Delete an Item**
+
+    - Method: DELETE
+    - URL: /someitems/`<id>`/
+    - Headers: Authorization: Bearer `<access_token>`
+    - Description: Replace `<id>` with the ID of the item you want to delete.
+
+    **Retrieve All Items**
+
+    - Method: GET
+    - URL: /someitems/
+    - Retrieve a Single Item
+
+    **Retrieve one item**
+    
+    - Method: GET
+    - URL: /someitems/`<id>`/
+    - Description: Replace `<id>` with the ID of the specific item.
+
+### Tested - User Driven, refer to above
+
+### Any tests of note? - N/A
+
+### Describe any tests that you did not complete, skipped, etc - N/A
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 ## Change Log #2
 ### Feb 20 2024
 

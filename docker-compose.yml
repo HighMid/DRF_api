@@ -7,23 +7,31 @@
 #         volumes:
 #             - .:/code
 
-services:
-    web:
-        build: .
-        command: python /code/manage.py runserver 0.0.0.0:8000
-        volumes:
-            - .:/code
-        ports:
-            - 8000:8000
-        depends_on:
-            - db
+version: '3.8'
 
-    db:
-        image: postgres:14
-        volumes:
-            - postgres_data:/var/lib/postgresql/data/
-        environment:
-            - "POSTGRES_HOST_AUTH_METHOD=trust"
+services:
+  web:
+    build: .
+    command: gunicorn some_API.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - "DATABASE_HOST=db"
+      - "DATABASE_PORT=5432"
+      - "DATABASE_NAME=postgres"
+      - "DATABASE_USER=postgres"
+      - "DATABASE_PASSWORD=postgres"
+
+  db:
+    image: postgres:14
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
 
 volumes:
   postgres_data:
